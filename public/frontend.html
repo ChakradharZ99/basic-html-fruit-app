@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fruit Shop</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4f8a8b;
+            --accent: #fbd46d;
+            --success: #43aa8b;
+            --danger: #f45b69;
+            --bg: #f7f7f7;
+            --card: #fff;
+            --shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+        html, body { height: 100%; margin: 0; padding: 0; }
+        body {
+            font-family: 'Quicksand', Arial, sans-serif;
+            background: var(--bg);
+            min-height: 100vh;
+        }
+        .header {
+            position: sticky;
+            top: 0;
+            background: var(--primary);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1em 2em;
+            z-index: 1002;
+            box-shadow: var(--shadow);
+        }
+        .header .logo {
+            font-size: 1.7em;
+            font-weight: 700;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 0.5em;
+        }
+        .header .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1.2em;
+        }
+        .header .user-info .user {
+            font-weight: 700;
+            background: var(--accent);
+            color: var(--primary);
+            border-radius: 2em;
+            padding: 0.3em 1em;
+            display: flex;
+            align-items: center;
+            gap: 0.5em;
+        }
+        .header .user-info button {
+            background: var(--danger);
+            color: #fff;
+            border: none;
+            border-radius: 2em;
+            padding: 0.4em 1.2em;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .header .user-info button:hover {
+            background: #d32f2f;
+        }
+        .main {
+            max-width: 1100px;
+            margin: 2em auto;
+            background: var(--card);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            padding: 2em 2em 3em 2em;
+        }
+        .auth-section {
+            max-width: 400px;
+            min-height: 420px;
+            margin: 3em auto 0 auto;
+            background: var(--card);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            padding: 2em 2em 1em 2em;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .auth-section h2 { text-align: center; margin-bottom: 0.5em; }
+        .form-group { margin-bottom: 1.2em; position: relative; }
+        .form-group label {
+            position: absolute;
+            left: 1em;
+            top: 0.7em;
+            color: #888;
+            font-size: 1em;
+            pointer-events: none;
+            transition: 0.2s;
+        }
+        .form-group input:focus + label,
+        .form-group input:not(:placeholder-shown) + label {
+            top: -0.9em;
+            left: 0.7em;
+            background: var(--card);
+            color: var(--primary);
+            font-size: 0.9em;
+            padding: 0 0.3em;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 1em 1em 0.7em 1em;
+            border: 1.5px solid #ddd;
+            border-radius: 6px;
+            font-size: 1em;
+            background: #fafafa;
+            outline: none;
+            transition: border 0.2s;
+        }
+        .form-group input:focus {
+            border: 1.5px solid var(--primary);
+        }
+        .auth-section button {
+            width: 100%;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 0.8em;
+            font-size: 1.1em;
+            font-weight: 700;
+            cursor: pointer;
+            margin-bottom: 0.5em;
+            transition: background 0.2s;
+        }
+        .auth-section button:hover {
+            background: #357376;
+        }
+        .msg {
+            margin: 0.5em 0 1em 0;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1em;
+        }
+        .msg.success { color: var(--success); }
+        .msg.error { color: var(--danger); }
+        .fruits-section {
+            margin-bottom: 2.5em;
+        }
+        .fruits-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 2em;
+            margin-top: 1.5em;
+        }
+        .fruit-card {
+            background: #fffbe7;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+            padding: 1.2em 1em 1em 1em;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: transform 0.15s, box-shadow 0.15s;
+            position: relative;
+        }
+        .fruit-card:hover {
+            transform: translateY(-6px) scale(1.03);
+            box-shadow: 0 6px 24px rgba(79,138,139,0.13);
+        }
+        .fruit-card img {
+            width: 110px;
+            height: 110px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 0.7em;
+            background: #eee;
+        }
+        .fruit-card .fruit-name {
+            font-size: 1.2em;
+            font-weight: 700;
+            margin-bottom: 0.2em;
+            color: var(--primary);
+        }
+        .fruit-card .fruit-price {
+            font-size: 1.1em;
+            color: #333;
+            margin-bottom: 0.7em;
+        }
+        .fruit-card button {
+            background: var(--success);
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 0.6em 1.2em;
+            font-size: 1em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .fruit-card button:disabled {
+            background: #b2dfdb;
+            color: #fff;
+            cursor: not-allowed;
+        }
+        .cart-drawer {
+            position: fixed;
+            top: 0; right: 0;
+            width: 340px;
+            height: 100vh;
+            background: #fff;
+            box-shadow: -2px 0 16px rgba(0,0,0,0.13);
+            z-index: 2100;
+            transform: translateX(100%);
+            transition: transform 0.3s cubic-bezier(.4,2,.6,1);
+            display: flex;
+            flex-direction: column;
+        }
+        .cart-drawer.open {
+            transform: translateX(0);
+        }
+        .cart-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.2em 1.5em 0.7em 1.5em;
+            border-bottom: 1px solid #eee;
+        }
+        .cart-header h2 {
+            margin: 0;
+            font-size: 1.3em;
+            color: var(--primary);
+        }
+        .cart-header button {
+            background: none;
+            border: none;
+            font-size: 1.5em;
+            color: #888;
+            cursor: pointer;
+        }
+        .cart-list {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 0.5em;
+        }
+        .cart-list th, .cart-list td {
+            border: none;
+            padding: 0.7em 0.5em;
+            text-align: center;
+        }
+        .cart-list th { background: #f0f0f0; }
+        .cart-list img { width: 48px; height: 48px; border-radius: 6px; object-fit: cover; }
+        .cart-remove-btn {
+            background: var(--danger);
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 0.3em 0.7em;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .cart-remove-btn:hover {
+            background: #b71c1c;
+        }
+        .cart-footer {
+            margin-top: auto;
+            padding: 1.2em 1.5em;
+            border-top: 1px solid #eee;
+            font-weight: 700;
+            font-size: 1.1em;
+            color: var(--primary);
+            display: flex;
+            justify-content: space-between;
+        }
+        .cart-empty {
+            text-align: center;
+            color: #888;
+            margin: 2em 0;
+        }
+        .cart-btn {
+            position: fixed;
+            bottom: 2em;
+            right: 2em;
+            background: var(--accent);
+            color: var(--primary);
+            border: none;
+            border-radius: 50%;
+            width: 56px;
+            height: 56px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.13);
+            font-size: 2em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 1000;
+            transition: background 0.2s;
+            outline: none;
+        }
+        .cart-btn:focus, .cart-btn:hover {
+            background: var(--primary);
+            color: #fff;
+        }
+        /* Remove the badge entirely */
+        .cart-btn .cart-badge { display: none !important; }
+        /* Add Fruit Button Styling */
+        #add-fruit-form button {
+            background: var(--accent);
+            color: var(--primary);
+            border: none;
+            border-radius: 6px;
+            padding: 0.8em;
+            font-size: 1.1em;
+            font-weight: 700;
+            cursor: pointer;
+            margin-bottom: 0.5em;
+            transition: background 0.2s, color 0.2s;
+        }
+        #add-fruit-form button:hover {
+            background: var(--primary);
+            color: #fff;
+        }
+        @media (max-width: 900px) {
+            .main { padding: 1em 0.5em 2em 0.5em; }
+            .container { padding: 1em 0.5em; }
+            .cart-drawer { width: 100vw; }
+        }
+        @media (max-width: 600px) {
+            .fruits-list { grid-template-columns: 1fr; }
+            .main { padding: 0.5em 0.2em 1em 0.2em; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <span class="logo">🍉 Fruit Shop</span>
+        <div class="user-info" id="user-bar" style="display:none">
+            <span class="user" id="user-info"></span>
+            <button id="logout-btn">Logout</button>
+        </div>
+    </div>
+    <div class="main">
+        <!-- Auth Section -->
+        <div class="auth-section" id="auth-section">
+            <h2>Login</h2>
+            <form id="login-form">
+                <div class="form-group">
+                    <input type="text" name="username" required placeholder=" ">
+                    <label>Username</label>
+                </div>
+                <div class="form-group">
+                    <input type="password" name="password" required placeholder=" ">
+                    <label>Password</label>
+                </div>
+                <button type="submit">Login</button>
+                <div class="msg" id="login-msg"></div>
+            </form>
+            <h2>or Sign Up</h2>
+            <form id="signup-form">
+                <div class="form-group">
+                    <input type="email" name="email" required placeholder=" ">
+                    <label>Email</label>
+                </div>
+                <div class="form-group">
+                    <input type="text" name="username" required placeholder=" ">
+                    <label>Username</label>
+                </div>
+                <div class="form-group">
+                    <input type="password" name="password" required placeholder=" ">
+                    <label>Password</label>
+                </div>
+                <button type="submit">Sign Up</button>
+                <div class="msg" id="signup-msg"></div>
+            </form>
+        </div>
+        <!-- Shop Section -->
+        <div id="shop-section" style="display:none">
+            <div class="fruits-section">
+                <div style="display:flex;align-items:center;justify-content:space-between;">
+                    <h2 style="margin:0;">All Fruits</h2>
+                    <button class="cart-btn" id="cart-btn" title="View Cart">
+                        🛒
+                    </button>
+                </div>
+                <div class="fruits-list" id="fruits-list"></div>
+                <div class="msg" id="fruits-msg"></div>
+            </div>
+            <div class="section">
+                <h2>Add Fruit</h2>
+                <form id="add-fruit-form">
+                    <div class="form-group">
+                        <input type="text" name="fruit" required placeholder=" ">
+                        <label>Fruit Name</label>
+                    </div>
+                    <div class="form-group">
+                        <input type="number" name="price" required placeholder=" ">
+                        <label>Price</label>
+                    </div>
+                    <button type="submit">Add Fruit</button>
+                    <div class="msg" id="add-fruit-msg"></div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- Cart Drawer -->
+    <div class="cart-drawer" id="cart-drawer">
+        <div class="cart-header">
+            <h2>Your Cart</h2>
+            <button id="close-cart" title="Close">&times;</button>
+        </div>
+        <table class="cart-list" id="cart-list">
+            <thead>
+                <tr><th>Image</th><th>Fruit</th><th>Price</th><th></th></tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <div class="cart-empty" id="cart-empty" style="display:none">Your cart is empty.</div>
+        <div class="cart-footer">
+            <span>Total:</span> $<span id="cart-total">0</span>
+        </div>
+    </div>
+    <script>
+        // State
+        let currentUser = null;
+        let cartCount = 0;
+
+        // Helper: POST
+        async function postData(url, data) {
+            const res = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            return res.json();
+        }
+        // Helper: GET
+        async function getData(url) {
+            const res = await fetch(url);
+            return res.json();
+        }
+
+        // Auth Flow
+        const authSection = document.getElementById('auth-section');
+        const shopSection = document.getElementById('shop-section');
+        const userBar = document.getElementById('user-bar');
+        const userInfo = document.getElementById('user-info');
+        const logoutBtn = document.getElementById('logout-btn');
+        const cartBtn = document.getElementById('cart-btn');
+        const cartDrawer = document.getElementById('cart-drawer');
+        const closeCart = document.getElementById('close-cart');
+
+        function showShop(user) {
+            currentUser = user;
+            authSection.style.display = 'none';
+            shopSection.style.display = '';
+            userBar.style.display = 'flex';
+            userInfo.textContent = `🍍 ${user.username}`;
+            loadFruits();
+            loadCart();
+        }
+        function showAuth() {
+            currentUser = null;
+            authSection.style.display = '';
+            shopSection.style.display = 'none';
+            userBar.style.display = 'none';
+            closeCartDrawer();
+        }
+
+        // Login
+        document.getElementById('login-form').onsubmit = async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const data = {
+                username: form.username.value,
+                password: form.password.value
+            };
+            const msg = document.getElementById('login-msg');
+            msg.textContent = 'Loading...';
+            msg.className = 'msg';
+            try {
+                const res = await postData('/api/v1/auth/login', data);
+                if (res.user) {
+                    msg.textContent = '';
+                    showShop(res.user);
+                } else {
+                    msg.textContent = res.msg || JSON.stringify(res);
+                    msg.className = 'msg error';
+                }
+            } catch (err) {
+                msg.textContent = 'Error: ' + err;
+                msg.className = 'msg error';
+            }
+        };
+        // Signup
+        document.getElementById('signup-form').onsubmit = async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const data = {
+                email: form.email.value,
+                username: form.username.value,
+                password: form.password.value
+            };
+            const msg = document.getElementById('signup-msg');
+            msg.textContent = 'Loading...';
+            msg.className = 'msg';
+            try {
+                const res = await postData('/api/v1/auth/signin', data);
+                if (res.msg && res.msg.includes('success')) {
+                    msg.textContent = 'Signup successful! You can now login.';
+                    msg.className = 'msg success';
+                } else {
+                    msg.textContent = res.msg || JSON.stringify(res);
+                    msg.className = 'msg error';
+                }
+            } catch (err) {
+                msg.textContent = 'Error: ' + err;
+                msg.className = 'msg error';
+            }
+        };
+        // Logout
+        logoutBtn.onclick = async () => {
+            await postData('/api/v1/auth/logout', {});
+            showAuth();
+        };
+
+        // Cart Drawer
+        cartBtn.onclick = () => {
+            cartDrawer.classList.add('open');
+        };
+        closeCart.onclick = () => {
+            closeCartDrawer();
+        };
+        function closeCartDrawer() {
+            cartDrawer.classList.remove('open');
+        }
+        // Close cart on outside click
+        window.addEventListener('click', (e) => {
+            if (cartDrawer.classList.contains('open') && !cartDrawer.contains(e.target) && e.target !== cartBtn) {
+                closeCartDrawer();
+            }
+        });
+
+        // Fruits List
+        async function loadFruits() {
+            const list = document.getElementById('fruits-list');
+            const msg = document.getElementById('fruits-msg');
+            list.innerHTML = '';
+            msg.textContent = 'Loading...';
+            try {
+                const fruits = await getData('/api/v1/fruits');
+                msg.textContent = '';
+                if (!Array.isArray(fruits) || fruits.length === 0) {
+                    msg.textContent = 'No fruits available.';
+                    return;
+                }
+                // Get cart fruit IDs to disable already added
+                let cartFruitIds = [];
+                try {
+                    const cart = await getData(`/api/v1/cart/${currentUser.id}`);
+                    cartFruitIds = cart.map(item => item.fruit_id);
+                } catch {}
+                fruits.forEach(fruit => {
+                    const card = document.createElement('div');
+                    card.className = 'fruit-card';
+                    card.innerHTML = `
+                        <img src="${fruit.image}" alt="${fruit.fruit}">
+                        <div class="fruit-name">${fruit.fruit}</div>
+                        <div class="fruit-price">$${fruit.price}</div>
+                    `;
+                    const btn = document.createElement('button');
+                    btn.textContent = cartFruitIds.includes(fruit.id) ? 'In Cart' : 'Add to Cart';
+                    btn.disabled = cartFruitIds.includes(fruit.id);
+                    btn.onclick = async () => {
+                        btn.disabled = true;
+                        btn.textContent = 'Adding...';
+                        const res = await postData('/api/v1/cart/add', { user_id: currentUser.id, fruit_id: fruit.id });
+                        btn.textContent = 'In Cart';
+                        btn.disabled = true;
+                        loadCart();
+                    };
+                    card.appendChild(btn);
+                    list.appendChild(card);
+                });
+            } catch (err) {
+                msg.textContent = 'Error: ' + err;
+            }
+        }
+
+        // Cart
+        async function loadCart() {
+            const table = document.getElementById('cart-list').querySelector('tbody');
+            const emptyMsg = document.getElementById('cart-empty');
+            const totalSpan = document.getElementById('cart-total');
+            table.innerHTML = '';
+            emptyMsg.style.display = 'none';
+            let total = 0;
+            let count = 0;
+            try {
+                const cart = await getData(`/api/v1/cart/${currentUser.id}`);
+                if (!Array.isArray(cart) || cart.length === 0) {
+                    emptyMsg.style.display = '';
+                    totalSpan.textContent = '0';
+                    return;
+                }
+                cart.forEach(item => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td><img src="${item.image}" alt="${item.fruit}"></td>
+                        <td>${item.fruit}</td>
+                        <td>$${item.price}</td>
+                        <td><button class="cart-remove-btn" title="Remove">&times;</button></td>
+                    `;
+                    row.querySelector('button').onclick = async () => {
+                        await removeFromCart(item.cart_id);
+                        loadCart();
+                        loadFruits();
+                    };
+                    table.appendChild(row);
+                    total += Number(item.price);
+                    count++;
+                });
+                totalSpan.textContent = total;
+                return;
+            } catch (err) {
+                emptyMsg.textContent = 'Error: ' + err;
+                emptyMsg.style.display = '';
+                totalSpan.textContent = '0';
+            }
+        }
+
+        // Remove from cart
+        async function removeFromCart(cart_id) {
+            try {
+                await fetch(`/api/v1/cart/${cart_id}`, { method: 'DELETE' });
+            } catch (err) {
+                // Optionally show error
+            }
+        }
+
+        // Add Fruit
+        document.getElementById('add-fruit-form').onsubmit = async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const data = {
+                fruit: form.fruit.value,
+                price: form.price.value
+            };
+            const msg = document.getElementById('add-fruit-msg');
+            msg.textContent = 'Loading...';
+            msg.className = 'msg';
+            try {
+                const res = await postData('/api/v1/fruits/add', data);
+                msg.textContent = res.msg || JSON.stringify(res);
+                msg.className = res.msg && res.msg.includes('success') ? 'msg success' : 'msg error';
+                loadFruits();
+            } catch (err) {
+                msg.textContent = 'Error: ' + err;
+                msg.className = 'msg error';
+            }
+        };
+
+        // On load, show auth
+        showAuth();
+    </script>
+</body>
+</html>
